@@ -2,6 +2,8 @@ import streamDeck, { action, KeyDownEvent, SingletonAction, WillAppearEvent } fr
 import { insertStreamMarker, MarkerResult } from "../browser-manager";
 import { GlobalSettings } from "../settings";
 
+import { resolveBrowserPath, launchBrowser } from "../browser-resolver";
+
 @action({ UUID: "com.fernandor.ytstreammarker.addmarker" })
 export class MarkerAction extends SingletonAction {
 
@@ -12,15 +14,36 @@ export class MarkerAction extends SingletonAction {
     override async onKeyDown(ev: KeyDownEvent) {
         const settings = await streamDeck.settings.getGlobalSettings<GlobalSettings>();
         
-        const path = settings.browserPath || '';
+        const path = resolveBrowserPath(settings.browserType || 'chrome', settings.browserPath);
         const port = settings.cdpPort || 9222;
         const forceKill = settings.forceKill || false;
 
         // Visual feedback that we are trying
         await this.updateState(ev.action, 'idle', true);
 
-        const result = await insertStreamMarker(path, port, forceKill);
-        await this.updateState(ev.action, result);
+        try {
+            const result = await insertStreamMarker(path, port, forceKill);
+            await this.updateState(ev.action, result);
+        } catch (error) {
+            if (forceKill && path) {
+                try {
+                    const processName = path.split('\\').pop()?.split('/').pop() || '';
+                    if (processName) {
+                        const execSync = require('child_process').execSync;
+                        if (process.platform === 'win32') {
+                            execSync(`taskkill /IM "${processName}" /F`, { stdio: 'ignore' });
+                        } else {
+                            execSync(`pkill -f "${processName}"`, { stdio: 'ignore' });
+                        }
+                    }
+                } catch (e) {
+                    // Ignore kill errors
+                }
+            }
+            // Launch browser to open the studio if not open
+            launchBrowser(path, port, settings.isolateSession || false);
+            await this.updateState(ev.action, 'error');
+        }
 
         // Reset state after 3 seconds
         setTimeout(() => {

@@ -1,6 +1,6 @@
 import streamDeck, { action, KeyDownEvent, SingletonAction, WillAppearEvent } from "@elgato/streamdeck";
-import { spawn } from "child_process";
 import { GlobalSettings } from "../settings";
+import { resolveBrowserPath, launchBrowser } from "../browser-resolver";
 
 @action({ UUID: "com.fernandor.ytstreammarker.openbrowser" })
 export class OpenBrowserAction extends SingletonAction {
@@ -10,7 +10,7 @@ export class OpenBrowserAction extends SingletonAction {
 
     override async onKeyDown(ev: KeyDownEvent) {
         const settings = await streamDeck.settings.getGlobalSettings<GlobalSettings>();
-        const path = settings.browserPath;
+        const path = resolveBrowserPath(settings.browserType || 'chrome', settings.browserPath);
         const port = settings.cdpPort || 9222;
 
         if (!path) {
@@ -20,10 +20,7 @@ export class OpenBrowserAction extends SingletonAction {
         }
 
         try {
-            spawn(path, [`--remote-debugging-port=${port}`], {
-                detached: true,
-                stdio: 'ignore'
-            }).unref();
+            launchBrowser(path, port, settings.isolateSession || false);
             await this.updateState(ev.action, 'success');
         } catch (e) {
             console.error("Failed to start browser", e);

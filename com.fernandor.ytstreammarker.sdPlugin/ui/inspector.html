@@ -11,17 +11,79 @@
     </style>
 </head>
 <body>
-    <sdpi-item label="Browser Path">
-        <sdpi-file setting="browserPath" global accept=".exe,.app"></sdpi-file>
+    <sdpi-item label="Browser">
+        <select id="nativeSelect" style="width: 100%; background-color: #3d3d3d; color: #fff; border: 1px solid #555; padding: 5px; border-radius: 4px; outline: none; cursor: pointer;">
+            <option value="chrome">Google Chrome</option>
+            <option value="edge">Microsoft Edge</option>
+            <option value="brave">Brave</option>
+            <option value="opera">Opera</option>
+            <option value="operagx">Opera GX</option>
+            <option value="vivaldi">Vivaldi</option>
+            <option value="custom">Custom...</option>
+        </select>
     </sdpi-item>
-    <span class="help-text">Path to Chromium-based browser executable</span>
     
-    <sdpi-item label="CDP Port">
+    <div style="display: none;">
+        <sdpi-textfield id="hiddenBrowserType" setting="browserType" global></sdpi-textfield>
+    </div>
+
+    <div id="custom-path-container" style="display: none;">
+        <sdpi-item label="Browser Path">
+            <sdpi-file setting="browserPath" global accept=".exe,.app"></sdpi-file>
+        </sdpi-item>
+        <span class="help-text">Path to Chromium-based browser executable</span>
+    </div>
+
+    <script>
+        // Wait for components and global settings to be ready
+        setTimeout(() => {
+            const nativeSelect = document.getElementById('nativeSelect');
+            const hiddenBrowserType = document.getElementById('hiddenBrowserType');
+            const customContainer = document.getElementById('custom-path-container');
+            
+            if (nativeSelect && hiddenBrowserType && customContainer) {
+                
+                const updateUI = () => {
+                    const val = hiddenBrowserType.value || hiddenBrowserType.getAttribute('value') || 'chrome';
+                    nativeSelect.value = val;
+                    if (val === 'custom') {
+                        customContainer.style.display = 'block';
+                    } else {
+                        customContainer.style.display = 'none';
+                    }
+                };
+
+                // When user changes the native dropdown
+                nativeSelect.addEventListener('change', () => {
+                    hiddenBrowserType.value = nativeSelect.value;
+                    hiddenBrowserType.setAttribute('value', nativeSelect.value);
+                    hiddenBrowserType.dispatchEvent(new Event('change', { bubbles: true }));
+                    hiddenBrowserType.dispatchEvent(new Event('input', { bubbles: true }));
+                    updateUI();
+                });
+
+                // Periodic check to sync if StreamDeck loads settings later
+                setInterval(() => {
+                    const currentVal = hiddenBrowserType.value || hiddenBrowserType.getAttribute('value');
+                    if (currentVal && currentVal !== nativeSelect.value) {
+                        updateUI();
+                    }
+                }, 500);
+
+                updateUI();
+            }
+        }, 800);
+    </script>
+    
+    <sdpi-item label="Port" title="Chrome DevTools Protocol port. Default is 9222.">
         <sdpi-textfield setting="cdpPort" global placeholder="9222"></sdpi-textfield>
     </sdpi-item>
-    <span class="help-text">Default is 9222</span>
 
-    <sdpi-item label="Force Restart">
+    <sdpi-item label="Profile" title="Creates a dedicated browser profile to prevent conflicts.">
+        <sdpi-checkbox setting="isolateSession" global label="(Recommended) Isolate session"></sdpi-checkbox>
+    </sdpi-item>
+
+    <sdpi-item label="Restart" title="Forcefully closes the browser if it's already running without debugging.">
         <sdpi-checkbox setting="forceKill" global label="Kill browser if running without CDP"></sdpi-checkbox>
     </sdpi-item>
 </body>

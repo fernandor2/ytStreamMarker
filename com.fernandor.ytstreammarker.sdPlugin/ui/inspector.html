@@ -12,17 +12,17 @@
 </head>
 <body>
     <sdpi-item label="Browser Path">
-        <sdpi-textfield setting="browserPath" placeholder="C:\Program Files\Helium\Helium.exe"></sdpi-textfield>
+        <sdpi-textfield setting="browserPath" global placeholder="C:\Program Files\Helium\Helium.exe"></sdpi-textfield>
     </sdpi-item>
     <span class="help-text">Path to Chromium-based browser executable</span>
     
     <sdpi-item label="CDP Port">
-        <sdpi-textfield setting="cdpPort" placeholder="9222"></sdpi-textfield>
+        <sdpi-textfield setting="cdpPort" global placeholder="9222"></sdpi-textfield>
     </sdpi-item>
     <span class="help-text">Default is 9222</span>
 
     <sdpi-item label="Force Restart">
-        <sdpi-checkbox setting="forceKill" label="Kill browser if running without CDP"></sdpi-checkbox>
+        <sdpi-checkbox setting="forceKill" global label="Kill browser if running without CDP"></sdpi-checkbox>
     </sdpi-item>
 </body>
 </html>

@@ -18,6 +18,22 @@
 					"TitleAlignment": "middle"
 				}
 			]
+		},
+		{
+			"Name": "Open Browser",
+			"UUID": "com.fernandor.ytstreammarker.openbrowser",
+			"Icon": "imgs/actions/counter/icon",
+			"Tooltip": "Opens the browser with CDP enabled.",
+			"PropertyInspectorPath": "ui/inspector.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/counter/key",
+					"TitleAlignment": "middle"
+				}
+			]
 		}
 	],
 	"Category": "YT Marker",

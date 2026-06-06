@@ -1,36 +1,16 @@
-import { action, KeyDownEvent, SingletonAction, WillAppearEvent } from "@elgato/streamdeck";
+import streamDeck, { action, KeyDownEvent, SingletonAction, WillAppearEvent } from "@elgato/streamdeck";
 import { insertStreamMarker, MarkerResult } from "../browser-manager";
-
-type Settings = {
-    browserPath?: string;
-    cdpPort?: number;
-    forceKill?: boolean;
-};
+import { GlobalSettings } from "../settings";
 
 @action({ UUID: "com.fernandor.ytstreammarker.addmarker" })
-export class MarkerAction extends SingletonAction<Settings> {
+export class MarkerAction extends SingletonAction {
 
-    override async onWillAppear(ev: WillAppearEvent<Settings>) {
-        const settings = ev.payload.settings;
-        let update = false;
-        
-        if (settings.cdpPort === undefined) {
-            settings.cdpPort = 9222;
-            update = true;
-        }
-        if (settings.forceKill === undefined) {
-            settings.forceKill = false;
-            update = true;
-        }
-
-        if (update) {
-            await ev.action.setSettings(settings);
-        }
+    override async onWillAppear(ev: WillAppearEvent) {
         await this.updateState(ev.action, 'idle');
     }
 
-    override async onKeyDown(ev: KeyDownEvent<Settings>) {
-        const { settings } = ev.payload;
+    override async onKeyDown(ev: KeyDownEvent) {
+        const settings = await streamDeck.settings.getGlobalSettings<GlobalSettings>();
         
         const path = settings.browserPath || '';
         const port = settings.cdpPort || 9222;

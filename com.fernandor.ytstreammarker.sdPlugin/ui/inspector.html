@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>YouTube Marker Settings</title>
+    <link rel="stylesheet" href="https://sdpi-components.dev/releases/v3/sdpi.css">
+    <script type="module" src="https://sdpi-components.dev/releases/v3/sdpi-components.js"></script>
+    <style>
+        body { padding: 10px; font-family: sans-serif; }
+        .help-text { font-size: 11px; color: #aaa; margin-top: 4px; display: block; padding-left: 8px;}
+    </style>
+</head>
+<body>
+    <sdpi-item label="Browser Path">
+        <sdpi-textfield setting="browserPath" placeholder="C:\Program Files\Helium\Helium.exe"></sdpi-textfield>
+    </sdpi-item>
+    <span class="help-text">Path to Chromium-based browser executable</span>
+    
+    <sdpi-item label="CDP Port">
+        <sdpi-textfield setting="cdpPort" placeholder="9222"></sdpi-textfield>
+    </sdpi-item>
+    <span class="help-text">Default is 9222</span>
+
+    <sdpi-item label="Force Restart">
+        <sdpi-checkbox setting="forceKill" label="Kill browser if running without CDP"></sdpi-checkbox>
+    </sdpi-item>
+</body>
+</html>

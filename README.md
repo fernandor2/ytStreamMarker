@@ -18,18 +18,36 @@ A convenient action to launch your preferred Chromium-based browser (e.g., Googl
 The core action. When pressed, it:
 - Connects to the browser via CDP on your local network.
 - Finds the active YouTube Studio tab (`studio.youtube.com/*/livestreaming`).
-- Dynamically interacts with the web interface to click the hidden `ytcp-icon-button` for adding a stream marker.
+- Dynamically interacts with the web interface using a robust DOM inspection mechanism (matching the exact `#insert-marker-button` ID, with safe fallbacks checking exact SVG paths and i18n accessibility labels).
 - Provides **dynamic visual feedback** directly on the Stream Deck key (green for success, red for error, yellow if the stream tab is not found).
 
 ## 🛠️ Configuration & Setup
 
-Both actions share the same **Global Settings**, meaning you only need to configure them once in the Stream Deck Property Inspector. **Note:** This plugin works with *any* Chromium-based browser.
+Both actions share the same **Global Settings**, meaning you only need to configure them once in the Stream Deck Property Inspector.
 
-1. **Browser Path:** Click to open the file picker and select your browser's executable file (e.g., `C:\Program Files\Google\Chrome\Application\chrome.exe`).
-2. **CDP Port:** The local port used for debugging. The default is `9222`.
-3. **Force Kill:** An optional toggle to forcefully kill any existing background instances of the browser before launching a new one with CDP enabled.
+1. **Browser:** Select your preferred Chromium browser from the dropdown. The plugin automatically locates the correct executable path on Windows and macOS.
+2. **Port:** The Chrome DevTools Protocol port. The default is `9222`.
+3. **Profile:** `(Recommended) Isolate session` automatically creates an independent, dedicated browser profile specifically for streaming, preventing conflicts with your daily tabs.
+4. **Restart:** `Kill browser if running without CDP` forcefully closes any existing background instances of the browser before launching it to ensure the debugging port connects successfully.
 
 ## 💻 Tech Stack & Development
-- **Node.js & TypeScript:** Built using the official `@elgato/streamdeck` SDK (v3).
+- **Node.js & TypeScript:** Built using the official `@elgato/streamdeck` SDK (v2).
 - **chrome-remote-interface:** To interface with the browser via the Chrome DevTools Protocol.
 - **Rollup:** For bundling the TypeScript code, JSON schemas, and dependencies into a lightweight, standalone Node.js executable.
+
+### Development Setup
+
+If you want to compile or modify the plugin yourself, you will need **Node.js (v20+)**:
+
+1. Clone the repository and install dependencies:
+   ```bash
+   npm install
+   ```
+2. Build the plugin into the `.streamDeckPlugin` directory:
+   ```bash
+   npm run build
+   ```
+3. (Optional) Run the watch compiler for active development:
+   ```bash
+   npm run watch
+   ```

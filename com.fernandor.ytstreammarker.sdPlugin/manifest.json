@@ -1,5 +1,5 @@
 {
-	"Name": "YouTube Stream Marker",
+	"Name": "Stream Marker for YouTube",
 	"Version": "1.0.0.0",
 	"Author": "fernandor",
 	"Actions": [
@@ -36,10 +36,10 @@
 			]
 		}
 	],
-	"Category": "YT Marker",
+	"Category": "Stream Marker for YouTube",
 	"CategoryIcon": "imgs/plugin/category-icon",
 	"CodePath": "bin/plugin.js",
-	"Description": "Insert a stream marker in YouTube Studio while livestreaming using CDP.",
+	"Description": "Instantly insert stream markers in YouTube Studio with a single button press while livestreaming via Chrome DevTools Protocol.",
 	"Icon": "imgs/plugin/marketplace",
 	"SDKVersion": 3,
 	"Software": {

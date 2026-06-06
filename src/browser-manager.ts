@@ -24,7 +24,11 @@ function killBrowserProcess(executablePath: string) {
         const pathParts = executablePath.split(/[\/\\]/);
         const processName = pathParts[pathParts.length - 1];
         if (processName) {
-            execSync(`taskkill /IM "${processName}" /F`, { stdio: 'ignore' });
+            if (process.platform === 'win32') {
+                execSync(`taskkill /IM "${processName}" /F`, { stdio: 'ignore' });
+            } else {
+                execSync(`pkill -f "${processName}"`, { stdio: 'ignore' });
+            }
         }
     } catch (e) {
         // Ignored, might not be running or no permission
@@ -81,13 +85,28 @@ export async function insertStreamMarker(executablePath: string, port: number = 
 
             const expression = `
                 (() => {
-                    const buttons = Array.from(document.querySelectorAll('div[role="button"], ytcp-button, button, ytcp-icon-button'));
-                    const markerBtn = buttons.find(b => {
-                        const aria = (b.getAttribute('aria-label') || '').toLowerCase();
-                        const text = (b.textContent || '').toLowerCase();
-                        return (aria.includes('marker') || aria.includes('marcador')) ||
-                               (text.includes('marker') || text.includes('marcador'));
-                    });
+                    // Primary invariant: ID selector
+                    let markerBtn = document.querySelector('#insert-marker-button');
+
+                    // Fallback: Check all buttons for the exact SVG path or i18n text
+                    if (!markerBtn) {
+                        const buttons = Array.from(document.querySelectorAll('div[role="button"], ytcp-button, button, ytcp-icon-button'));
+                        markerBtn = buttons.find(b => {
+                            const pathEl = b.querySelector('path');
+                            if (pathEl) {
+                                const d = pathEl.getAttribute('d');
+                                // Check for the bookmark marker path
+                                if (d && d.startsWith('M19 2H5a2 2 0 00-2 2v16.887')) {
+                                    return true;
+                                }
+                            }
+                            
+                            const aria = (b.getAttribute('aria-label') || '').toLowerCase();
+                            const text = (b.textContent || '').toLowerCase();
+                            return (aria.includes('marker') || aria.includes('marcador')) ||
+                                   (text.includes('marker') || text.includes('marcador'));
+                        });
+                    }
 
                     if (markerBtn) {
                         markerBtn.click();

@@ -65,23 +65,23 @@ export async function insertStreamMarker(executablePath: string, port: number = 
             }
         }
 
-        const targets = await CDP.List({ port });
+        const targets = await CDP.List({ host: '127.0.0.1', port });
         const streamTab = targets.find((t: any) => t.url && t.url.includes('studio.youtube.com') && t.url.includes('livestreaming'));
 
         if (!streamTab) {
             // Open YT Studio if not found
-            await CDP.New({ port, url: 'https://studio.youtube.com' });
+            await CDP.New({ host: '127.0.0.1', port, url: 'https://studio.youtube.com' });
             return 'no_stream';
         }
 
-        const client = await CDP({ target: streamTab, port });
+        const client = await CDP({ target: streamTab, host: '127.0.0.1', port });
         try {
             const { Runtime } = client;
             await Runtime.enable();
 
             const expression = `
                 (() => {
-                    const buttons = Array.from(document.querySelectorAll('div[role="button"], ytcp-button, button'));
+                    const buttons = Array.from(document.querySelectorAll('div[role="button"], ytcp-button, button, ytcp-icon-button'));
                     const markerBtn = buttons.find(b => {
                         const aria = (b.getAttribute('aria-label') || '').toLowerCase();
                         const text = (b.textContent || '').toLowerCase();
@@ -90,12 +90,7 @@ export async function insertStreamMarker(executablePath: string, port: number = 
                     });
 
                     if (markerBtn) {
-                        const mousedown = new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window });
-                        const mouseup = new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window });
-                        const click = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
-                        markerBtn.dispatchEvent(mousedown);
-                        markerBtn.dispatchEvent(mouseup);
-                        markerBtn.dispatchEvent(click);
+                        markerBtn.click();
                         return true;
                     }
                     return false;

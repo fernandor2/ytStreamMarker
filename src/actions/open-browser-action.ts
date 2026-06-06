@@ -38,7 +38,7 @@ export class OpenBrowserAction extends SingletonAction {
         if (state === 'success') color = '#28a745';
         else if (state === 'error') color = '#dc3545';
 
-        const svg = `data:image/svg+xml;charset=utf8,<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144"><rect width="144" height="144" fill="${color}" /><text x="50%" y="50%" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" dy=".3em">Browser</text></svg>`;
+        const svg = `data:image/svg+xml;charset=utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 144 144"><rect width="144" height="144" fill="${color}" /><circle cx="72" cy="72" r="40" fill="none" stroke="%23ffffff" stroke-width="8" /><path d="M 32 72 L 112 72 M 72 32 L 72 112 M 45 45 C 60 72 60 72 45 99 M 99 45 C 84 72 84 72 99 99" stroke="%23ffffff" stroke-width="6" fill="none" /></svg>`;
         await actionInstance.setImage(svg);
     }
 }

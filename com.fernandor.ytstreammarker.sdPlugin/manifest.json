@@ -6,7 +6,7 @@
 		{
 			"Name": "Insert Marker",
 			"UUID": "com.fernandor.ytstreammarker.addmarker",
-			"Icon": "imgs/actions/counter/icon",
+			"Icon": "imgs/actions/marker/icon",
 			"Tooltip": "Inserts a stream marker in YouTube Studio.",
 			"PropertyInspectorPath": "ui/inspector.html",
 			"Controllers": [
@@ -14,7 +14,7 @@
 			],
 			"States": [
 				{
-					"Image": "imgs/actions/counter/key",
+					"Image": "imgs/actions/marker/key",
 					"TitleAlignment": "middle"
 				}
 			]
@@ -22,7 +22,7 @@
 		{
 			"Name": "Open Browser",
 			"UUID": "com.fernandor.ytstreammarker.openbrowser",
-			"Icon": "imgs/actions/counter/icon",
+			"Icon": "imgs/actions/browser/icon",
 			"Tooltip": "Opens the browser with CDP enabled.",
 			"PropertyInspectorPath": "ui/inspector.html",
 			"Controllers": [
@@ -30,7 +30,7 @@
 			],
 			"States": [
 				{
-					"Image": "imgs/actions/counter/key",
+					"Image": "imgs/actions/browser/key",
 					"TitleAlignment": "middle"
 				}
 			]
